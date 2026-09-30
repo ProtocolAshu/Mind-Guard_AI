@@ -1,0 +1,56 @@
+[project]
+name = "mindguard-backend"
+version = "1.0.0"
+description = "MindGuard: autonomous multi-agent AI attention firewall (backend)"
+requires-python = ">=3.12"
+license = { text = "MIT" }
+
+[tool.ruff]
+line-length = 120
+target-version = "py312"
+extend-exclude = ["migrations/versions"]
+
+[tool.ruff.lint]
+select = ["E", "F", "W", "I", "B", "UP", "S", "ASYNC", "RUF", "SIM", "PT"]
+ignore = [
+  "E501",   # line length is handled by `ruff format`
+  "S101",   # asserts are used in tests
+  "B008",   # FastAPI Depends() in defaults is idiomatic
+  "RUF012", # mutable class attrs on pydantic models are fine
+  "S311",   # random is used for simulation/exploration, not cryptography
+]
+
+[tool.ruff.lint.per-file-ignores]
+"tests/**" = ["S105", "S106", "S108", "PT011", "PT018", "RUF001", "RUF003", "E741"]
+"app/security/injection.py" = ["RUF001"]
+"app/policies/compiler.py" = ["RUF001"]
+
+[tool.mypy]
+python_version = "3.12"
+plugins = ["pydantic.mypy"]
+ignore_missing_imports = true
+warn_unused_ignores = true
+warn_redundant_casts = true
+no_implicit_optional = true
+check_untyped_defs = true
+disallow_untyped_defs = true
+exclude = ["^tests/", "^migrations/"]
+
+[tool.pytest.ini_options]
+asyncio_mode = "auto"
+asyncio_default_fixture_loop_scope = "function"
+testpaths = ["tests"]
+pythonpath = ["."]
+markers = [
+  "postgres: requires PostgreSQL+pgvector (run the suite with TEST_DATABASE_URL=postgresql+asyncpg://...)",
+  "redis: requires a live Redis (set TEST_REDIS_URL)",
+  "slow: slower integration/e2e tests",
+]
+filterwarnings = ["ignore::DeprecationWarning:passlib.*"]
+
+[tool.coverage.run]
+source = ["app"]
+omit = ["app/__main__.py"]
+
+[tool.bandit]
+exclude_dirs = ["tests", "migrations"]

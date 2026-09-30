@@ -1,0 +1,28 @@
+# Runtime dependencies — pinned to the versions verified in the build environment.
+fastapi==0.141.1
+uvicorn[standard]==0.53.0
+pydantic==2.13.5
+pydantic-settings==2.15.0
+SQLAlchemy[asyncio]==2.0.54
+asyncpg==0.31.0
+aiosqlite==0.22.1
+alembic==1.20.0
+pgvector==0.5.0
+redis==8.1.0
+argon2-cffi==25.1.0
+PyJWT==2.14.0
+httpx==0.28.1
+anthropic==1.6.0
+langgraph==1.2.11
+opentelemetry-sdk==1.44.0
+opentelemetry-exporter-otlp-proto-http==1.44.0
+prometheus_client==0.26.0
+numpy==2.5.3
+pandas==3.0.5
+scikit-learn==1.9.1
+scipy==1.18.1
+joblib==1.6.0
+lightgbm==4.7.0
+xgboost-cpu==3.4.1  # CPU-only XGBoost wheel; required to load the served distraction model
+python-multipart==0.0.32
+pillow==12.3.0

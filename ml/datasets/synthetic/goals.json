@@ -1,0 +1,32 @@
+[
+  {
+    "persona": "night_owl_student",
+    "description": "Placement-prep student; long late-night scrolling; responds to delays, resents blocks.",
+    "constitution": "I am preparing for placements. Don't allow short videos during study sessions. After 11 PM, block entertainment. If I exceed 45 minutes of social media, ask me before continuing.",
+    "style": "balanced"
+  },
+  {
+    "persona": "focused_but_impulsive",
+    "description": "Disciplined planner with frequent impulsive checks during focus blocks; complies with firm rules.",
+    "constitution": "I am preparing for my GATE exam. Don't allow social media during study sessions.",
+    "style": "strict"
+  },
+  {
+    "persona": "reactant_scroller",
+    "description": "Strongly autonomy-sensitive; overrides most hard restrictions; gentle prompts work best.",
+    "constitution": "I want to finish my thesis. Warn me gently if I start scrolling late at night. Limit entertainment.",
+    "style": "gentle"
+  },
+  {
+    "persona": "compliant_planner",
+    "description": "Moderate user who follows most interventions; low baseline risk.",
+    "constitution": "I am learning machine learning. Only allow educational content during study sessions.",
+    "style": "balanced"
+  },
+  {
+    "persona": "binge_watcher",
+    "description": "Evening video binges; content mostly entertainment; limited access works, reminders do not.",
+    "constitution": "Limit YouTube to 60 minutes a day. After 11 PM, block entertainment.",
+    "style": "balanced"
+  }
+]

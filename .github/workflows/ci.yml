@@ -1,0 +1,181 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+env:
+  PYTHON_VERSION: "3.12"
+  NODE_VERSION: "22"
+
+jobs:
+  backend:
+    name: Backend (lint, types, security, tests)
+    runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: pgvector/pgvector:pg16
+        env:
+          POSTGRES_USER: mindguard
+          POSTGRES_PASSWORD: mindguard
+          POSTGRES_DB: mindguard_test
+        ports: ["5432:5432"]
+        options: >-
+          --health-cmd "pg_isready -U mindguard -d mindguard_test"
+          --health-interval 5s --health-timeout 5s --health-retries 20
+      redis:
+        image: redis:7-alpine
+        ports: ["6379:6379"]
+        options: --health-cmd "redis-cli ping" --health-interval 5s --health-timeout 5s --health-retries 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: ${{ env.PYTHON_VERSION }}
+          cache: pip
+          cache-dependency-path: backend/requirements-dev.txt
+      - name: Install dependencies
+        run: pip install -r backend/requirements-dev.txt
+      - name: Lint (ruff)
+        working-directory: backend
+        run: ruff check app tests
+      - name: Type check (mypy)
+        working-directory: backend
+        run: mypy app
+      - name: Security scan (bandit)
+        working-directory: backend
+        run: bandit -q -c pyproject.toml -r app
+      - name: Dependency audit (pip-audit)
+        run: pipx run pip-audit -r backend/requirements.txt --strict
+      - name: Unit and integration tests (SQLite)
+        working-directory: backend
+        run: pytest -q --cov=app --cov-report=term-missing
+      - name: Integration tests (PostgreSQL + pgvector + Redis)
+        working-directory: backend
+        env:
+          TEST_DATABASE_URL: postgresql+asyncpg://mindguard:mindguard@localhost:5432/mindguard_test
+          TEST_REDIS_URL: redis://localhost:6379/1
+        run: pytest -q
+      - name: Migrations apply cleanly and match the models
+        working-directory: backend
+        env:
+          DATABASE_URL: postgresql+asyncpg://mindguard:mindguard@localhost:5432/mindguard_test
+        run: |
+          alembic upgrade head
+          alembic check
+      - name: Generated docs are up to date
+        env:
+          PYTHONPATH: backend
+          JWT_SECRET: ci-docs-secret-ci-docs-secret-ci-docs-00
+        run: |
+          python scripts/generate_docs.py
+          git diff --exit-code docs/api.md docs/configuration.md docs/api/openapi.json
+
+  demo:
+    name: Agent demo scenarios
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: ${{ env.PYTHON_VERSION }}
+          cache: pip
+          cache-dependency-path: backend/requirements-dev.txt
+      - run: pip install -r backend/requirements-dev.txt
+      - name: Six demo scenarios (served models)
+        env:
+          PYTHONPATH: backend:.
+        run: python demo/run_demo.py
+      - name: Six demo scenarios (rules only)
+        env:
+          PYTHONPATH: backend:.
+        run: python demo/run_demo.py --rules-only
+
+  web:
+    name: Web dashboard (types, tests, build)
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: web
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: npm
+          cache-dependency-path: web/package-lock.json
+      - run: npm ci
+      - run: npm run typecheck
+      - run: npm test
+      - run: npm run build
+      - name: Dependency audit
+        run: npm audit --omit=dev --audit-level=high
+
+  e2e:
+    name: End-to-end (backend-for-frontend flow)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: ${{ env.PYTHON_VERSION }}
+          cache: pip
+          cache-dependency-path: backend/requirements-dev.txt
+      - uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: npm
+          cache-dependency-path: web/package-lock.json
+      - run: pip install -r backend/requirements-dev.txt
+      - run: npm ci
+        working-directory: web
+      - run: npm run build
+        working-directory: web
+      - name: Run the BFF flow check
+        env:
+          PYTHON: python
+        run: ./scripts/run_e2e.sh
+
+  android:
+    name: Android (unit tests and debug APK)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: "17"
+      - uses: android-actions/setup-android@v3
+      - uses: gradle/actions/setup-gradle@v4
+        with:
+          gradle-version: "8.10.2"
+      - name: Domain unit tests
+        run: gradle -p android :domain:test --no-daemon
+      - name: Assemble debug APK
+        run: gradle -p android :app:assembleDebug --no-daemon
+      - uses: actions/upload-artifact@v4
+        with:
+          name: mindguard-debug-apk
+          path: android/app/build/outputs/apk/debug/*.apk
+          if-no-files-found: error
+
+  images:
+    name: Container images build
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: docker/setup-buildx-action@v3
+      - name: Build API image
+        uses: docker/build-push-action@v6
+        with:
+          context: .
+          file: infra/docker/backend.Dockerfile
+          push: false
+      - name: Build dashboard image
+        uses: docker/build-push-action@v6
+        with:
+          context: .
+          file: infra/docker/web.Dockerfile
+          push: false

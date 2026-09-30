@@ -1,0 +1,27 @@
+{
+  "python.defaultInterpreterPath": "${workspaceFolder}/.venv/bin/python",
+  "python.testing.pytestEnabled": true,
+  "python.testing.unittestEnabled": false,
+  "python.testing.cwd": "${workspaceFolder}/backend",
+  "python.testing.pytestArgs": ["tests"],
+  "python.analysis.extraPaths": ["${workspaceFolder}/backend", "${workspaceFolder}"],
+  "python.envFile": "${workspaceFolder}/.env",
+  "[python]": {
+    "editor.defaultFormatter": "charliermarsh.ruff",
+    "editor.formatOnSave": true,
+    "editor.codeActionsOnSave": { "source.organizeImports": "explicit" }
+  },
+  "ruff.configuration": "${workspaceFolder}/backend/pyproject.toml",
+  "mypy-type-checker.args": ["--config-file", "${workspaceFolder}/backend/pyproject.toml"],
+  "mypy-type-checker.cwd": "${workspaceFolder}/backend",
+  "[typescript][typescriptreact]": { "editor.defaultFormatter": "esbenp.prettier-vscode" },
+  "typescript.tsdk": "web/node_modules/typescript/lib",
+  "files.exclude": {
+    "**/__pycache__": true,
+    "**/.pytest_cache": true,
+    "**/.ruff_cache": true,
+    "**/.mypy_cache": true,
+    "web/.next": true
+  },
+  "search.exclude": { "web/node_modules": true, "ml/datasets": true, "research/results/chunks": true }
+}

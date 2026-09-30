@@ -1,0 +1,13 @@
+**/node_modules
+**/.next
+**/__pycache__
+**/.pytest_cache
+**/.ruff_cache
+**/.mypy_cache
+.git
+android
+docs
+research/results
+ml/datasets
+*.db
+.env

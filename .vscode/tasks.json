@@ -1,0 +1,11 @@
+{
+  "version": "2.0.0",
+  "tasks": [
+    { "label": "install: backend", "type": "shell", "command": "make install", "problemMatcher": [] },
+    { "label": "install: web", "type": "shell", "command": "make install-web", "problemMatcher": [] },
+    { "label": "migrate", "type": "shell", "command": "make migrate", "problemMatcher": [] },
+    { "label": "test: all", "type": "shell", "command": "make test-all", "group": { "kind": "test", "isDefault": true }, "problemMatcher": [] },
+    { "label": "demo", "type": "shell", "command": "make demo", "problemMatcher": [] },
+    { "label": "docker: up", "type": "shell", "command": "docker compose up --build", "problemMatcher": [] }
+  ]
+}

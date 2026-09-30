@@ -1,0 +1,88 @@
+{
+  "environment": "1 CPU container, SQLite in-memory, MockLLMProvider, served risk models; not a production benchmark",
+  "runs": 104,
+  "wall_seconds": 20.93,
+  "C_agent": {
+    "task_success_rate_all_modes": 1.0,
+    "task_success_rate_healthy_llm": 1.0,
+    "tool_calls": 629,
+    "tool_call_success_rate": 1.0,
+    "invalid_tool_call_rate": 0.0,
+    "tool_call_status": {
+      "ok": 629
+    },
+    "llm_requested_tool_calls": 5,
+    "unnecessary_llm_tool_calls": 5,
+    "duplicate_tool_calls": 0,
+    "avg_trajectory_length_nodes": 8.25,
+    "avg_tool_calls_per_evaluation": 7.06,
+    "by_scenario_success": {
+      "focus_high_risk": 1.0,
+      "educational_during_focus": 1.0,
+      "prompt_injection": 1.0,
+      "ambiguous_late_night": 1.0,
+      "ambiguous_risk_band": 1.0,
+      "ambiguous_content": 1.0,
+      "essential_app": 1.0,
+      "emergency_override": 1.0
+    }
+  },
+  "E_system": {
+    "latency_ms": {
+      "p50": 122.22,
+      "p95": 572.18,
+      "max": 824.77
+    },
+    "python_heap_peak_mb": 10.1,
+    "process_max_rss_mb": 268.1,
+    "llm_calls": 31,
+    "llm_calls_per_evaluation": 0.298,
+    "llm_call_status": {
+      "ok": 11,
+      "cached": 4,
+      "error": 4,
+      "timeout": 4,
+      "invalid_output": 8
+    },
+    "prompt_tokens": 16857,
+    "completion_tokens": 819,
+    "placeholder_cost_usd_per_1000_evaluations": 0.4694,
+    "reliability_valid_response_rate": 1.0,
+    "llm_path_exercised_rate": 0.25,
+    "ambiguous_session_used": {
+      "minutes": 60,
+      "opens_last_hour": 1,
+      "scroll_events": 160
+    },
+    "degraded_rate_by_llm_mode": {
+      "ok": 0.0,
+      "error": 0.125,
+      "timeout": 0.125,
+      "malformed": 0.125,
+      "compromised": 0.125
+    },
+    "decisions_by_llm_mode_for_llm_runs": {
+      "ok": {
+        "SOFT_WARNING": 5,
+        "ALLOW": 5
+      },
+      "error": {
+        "SOFT_WARNING": 2,
+        "ALLOW": 2
+      },
+      "timeout": {
+        "SOFT_WARNING": 2,
+        "ALLOW": 2
+      },
+      "malformed": {
+        "SOFT_WARNING": 2,
+        "ALLOW": 2
+      },
+      "compromised": {
+        "SOFT_WARNING": 2,
+        "ALLOW": 2
+      }
+    },
+    "battery_impact": "[PLACEHOLDER] requires on-device measurement (Android Battery Historian) \u2014 not measurable here"
+  }
+}

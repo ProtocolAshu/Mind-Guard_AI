@@ -1,0 +1,3 @@
+# MindGuard is a personal dashboard, not a public site.
+User-agent: *
+Disallow: /

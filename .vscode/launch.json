@@ -1,0 +1,44 @@
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "name": "API (uvicorn, reload)",
+      "type": "debugpy",
+      "request": "launch",
+      "module": "uvicorn",
+      "args": ["app.main:app", "--reload", "--port", "8000"],
+      "cwd": "${workspaceFolder}/backend",
+      "envFile": "${workspaceFolder}/.env",
+      "justMyCode": false
+    },
+    {
+      "name": "Demo scenarios",
+      "type": "debugpy",
+      "request": "launch",
+      "program": "${workspaceFolder}/demo/run_demo.py",
+      "cwd": "${workspaceFolder}",
+      "env": { "PYTHONPATH": "${workspaceFolder}/backend:${workspaceFolder}" },
+      "justMyCode": false
+    },
+    {
+      "name": "Seed synthetic users",
+      "type": "debugpy",
+      "request": "launch",
+      "program": "${workspaceFolder}/scripts/seed_synthetic.py",
+      "args": ["--days", "3"],
+      "cwd": "${workspaceFolder}",
+      "env": { "PYTHONPATH": "${workspaceFolder}/backend:${workspaceFolder}" },
+      "envFile": "${workspaceFolder}/.env"
+    },
+    {
+      "name": "Dashboard (next dev)",
+      "type": "node",
+      "request": "launch",
+      "cwd": "${workspaceFolder}/web",
+      "runtimeExecutable": "npm",
+      "runtimeArgs": ["run", "dev"],
+      "skipFiles": ["<node_internals>/**"]
+    }
+  ],
+  "compounds": [{ "name": "API + Dashboard", "configurations": ["API (uvicorn, reload)", "Dashboard (next dev)"] }]
+}
