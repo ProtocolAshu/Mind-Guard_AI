@@ -8,7 +8,7 @@ DB="$(mktemp -d)/mindguard-e2e.db"
   DATABASE_URL="sqlite+aiosqlite:///$DB" LLM_PROVIDER=mock LOG_JSON=false RATE_LIMIT_AUTH_PER_MINUTE=100 \
   exec "$PY" -m uvicorn app.main:app --host 127.0.0.1 --port 8000 --log-level warning ) &
 API_PID=$!
-( cd "$ROOT/web" && NEXT_TELEMETRY_DISABLED=1 MINDGUARD_API_URL=http://127.0.0.1:8000 exec npx next start -p 3000 -H 127.0.0.1 ) &
+( cd "$ROOT/web" && NEXT_TELEMETRY_DISABLED=1 MINDGUARD_API_URL=http://127.0.0.1:8000 PORT=3000 HOSTNAME=127.0.0.1 exec node .next/standalone/server.js ) &
 WEB_PID=$!
 cleanup() { kill "$API_PID" "$WEB_PID" 2>/dev/null || true; }
 trap cleanup EXIT
