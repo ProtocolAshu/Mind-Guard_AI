@@ -23,6 +23,9 @@
     "typescript": "5.9.2",
     "vitest": "3.2.4"
   },
+  "overrides": {
+    "postcss": "^8.5.28"
+  },
   "engines": {
     "node": ">=20"
   }
