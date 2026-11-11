@@ -104,3 +104,9 @@ evaluation with real people. See [docs/limitations.md](docs/limitations.md) for 
 ## License
 
 MIT.
+
+## Agent Skill: MindGuard Attention Firewall
+
+A portable, standalone agent skill in `skills/mindguard-attention-firewall/` packages MindGuard's decision approach: risk assessment, guardrail enforcement, one-rung-at-a-time interventions and explainable decisions. It is a reference implementation, not the full MindGuard system. See the skill's README.md for scope.
+
+Try it: `py -3 skills/mindguard-attention-firewall/scripts/decision_engine.py --demo`
